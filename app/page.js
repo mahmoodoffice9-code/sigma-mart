@@ -82,11 +82,11 @@ export default async function Home() {
               <div key={product.id || product.name} className="bg-gray-900 border border-gray-800 rounded-2xl p-4 hover:border-cyan-500 transition shadow-md flex flex-col justify-between">
                 <div>
                   <div className="h-48 bg-gray-800 rounded-xl mb-4 flex items-center justify-center text-gray-500 overflow-hidden relative">
-                    {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover rounded-xl" />
-                    ) : (
-                      <span>[No Image]</span>
-                    )}
+                    <img 
+                      src={product.image_url || "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
+                      alt={product.name} 
+                      className="w-full h-full object-cover rounded-xl" 
+                    />
                   </div>
                   <h3 className="font-bold text-lg mb-1">{product.name}</h3>
                   <p className="text-gray-400 text-sm mb-3 line-clamp-2">{product.description || "High quality sigma gear."}</p>
