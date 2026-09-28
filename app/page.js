@@ -23,9 +23,6 @@ export default function Home() {
   const [newDesc, setNewDesc] = useState('');
   const [newImage, setNewImage] = useState('');
 
-  // Selected product for modal preview view
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -93,25 +90,48 @@ export default function Home() {
     }
   };
 
-  // Robust Delete Function with strict error feedback
+  // Fixed & Polished Delete Function
   const handleDeleteProduct = async (id) => {
     if (!confirm('Kya aap waqai is product ko delete karna chahte hain?')) return;
 
     try {
-      console.log("Deleting product ID:", id);
-      const { data, error } = await supabase.from('products').delete().eq('id', id).select();
+      const { error } = await supabase.from('products').delete().eq('id', id);
       
       if (error) {
-        console.error("Supabase delete error:", error);
         alert('Delete failed: ' + error.message);
       } else {
-        console.log("Deleted successfully:", data);
         alert('Product successfully delete ho gaya! 🗑️');
         fetchProducts();
       }
     } catch (err) {
-      console.error("Unexpected error during delete:", err);
       alert('Unexpected error occurred while deleting.');
+    }
+  };
+
+  // Open Product Details in a Brand New Tab cleanly using window.open
+  const openProductInNewTab = (product) => {
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(`
+        <html>
+          <head>
+            <title>${product.name} - Sigma Mart</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+          </head>
+          <body class="bg-gray-950 text-white font-sans p-10">
+            <div class="max-w-xl mx-auto bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-2xl mt-10">
+              <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-80 object-cover rounded-2xl mb-6 border border-gray-800 shadow-md" />
+              <h1 class="text-3xl font-black text-amber-400 mb-2">${product.name}</h1>
+              <p class="text-2xl font-bold text-emerald-400 mb-6">$${product.price}</p>
+              <hr class="border-gray-800 my-4" />
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</h3>
+              <p class="text-gray-300 text-base leading-relaxed mb-8">${product.description || 'No description provided.'}</p>
+              <button onclick="window.close()" class="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition">Close Tab ✕</button>
+            </div>
+          </body>
+        </html>
+      `);
+      newWindow.document.close();
     }
   };
 
@@ -264,7 +284,7 @@ export default function Home() {
               products.map((product) => (
                 <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl transition flex flex-col justify-between group">
                   <div>
-                    <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative cursor-pointer" onClick={() => setSelectedProduct(product)}>
+                    <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative cursor-pointer" onClick={() => openProductInNewTab(product)}>
                       <img 
                         src={product.image_url && product.image_url.trim() !== '' ? product.image_url : "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
                         alt={product.name} 
@@ -272,9 +292,10 @@ export default function Home() {
                       />
                     </div>
                     
+                    {/* Clickable Title opens Product in a Brand New Tab */}
                     <button 
-                      onClick={() => setSelectedProduct(product)} 
-                      className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-300 decoration-2 underline-offset-4"
+                      onClick={() => openProductInNewTab(product)} 
+                      className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-300 decoration-2 underline-offset-4 cursor-pointer"
                     >
                       {product.name} ↗
                     </button>
@@ -315,37 +336,6 @@ export default function Home() {
           </div>
         )}
       </section>
-
-      {/* PRODUCT DETAIL POPUP MODAL */}
-      {selectedProduct && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-gray-900 text-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-gray-800 relative">
-            <button onClick={() => setSelectedProduct(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white font-bold text-xl">
-              ✕
-            </button>
-            
-            <div className="h-64 bg-gray-800 rounded-2xl mb-6 overflow-hidden border border-gray-800">
-              <img 
-                src={selectedProduct.image_url || "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
-                alt={selectedProduct.name} 
-                className="w-full h-full object-cover" 
-              />
-            </div>
-
-            <h2 className="text-3xl font-black text-amber-400 mb-2">{selectedProduct.name}</h2>
-            <p className="text-2xl font-bold text-white mb-4">${selectedProduct.price}</p>
-            
-            <hr className="border-gray-800 my-4" />
-            
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Product Description</h3>
-            <p className="text-gray-300 text-base leading-relaxed mb-8">{selectedProduct.description || "No description provided."}</p>
-
-            <button onClick={() => setSelectedProduct(null)} className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition">
-              Close Preview
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* 6. About Section */}
       <section id="about" className="max-w-5xl mx-auto px-4 py-20 text-center">
