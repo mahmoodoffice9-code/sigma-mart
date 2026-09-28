@@ -24,6 +24,24 @@ export default function Home() {
   const [newImage, setNewImage] = useState('');
 
   useEffect(() => {
+    // Load AOS animations library dynamically on client side
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/aos@next/dist/aos.js';
+    script.async = true;
+    script.onload = () => {
+      window.AOS.init({
+        duration: 800,
+        once: false,
+        mirror: true
+      });
+    };
+    document.body.appendChild(script);
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/aos@next/dist/aos.css';
+    document.head.appendChild(link);
+
     fetchProducts();
   }, []);
 
@@ -116,19 +134,19 @@ export default function Home() {
             <title>${product.name} - Online Shop</title>
             <script src="https://cdn.tailwindcss.com"></script>
           </head>
-          <body class="bg-white text-gray-900 font-sans animate-fade-in">
+          <body class="bg-white text-gray-900 font-sans">
             <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shadow-sm">
               <div class="text-2xl font-black text-orange-600 flex items-center gap-2">
                 <span>🛒</span> ONLINE SHOP
               </div>
-              <button onclick="window.close()" class="text-sm font-bold bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-gray-700 transition transform hover:scale-105">✕ Close Tab</button>
+              <button onclick="window.close()" class="text-sm font-bold bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-gray-700 transition">✕ Close Tab</button>
             </header>
 
             <main class="max-w-7xl mx-auto px-6 py-12">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
                 <div>
                   <div class="w-full h-[450px] bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 shadow-inner flex items-center justify-center">
-                    <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-full object-cover transform hover:scale-110 transition duration-500" />
+                    <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-full object-cover" />
                   </div>
                 </div>
 
@@ -157,10 +175,10 @@ export default function Home() {
                   </div>
 
                   <div class="flex gap-4 pt-2">
-                    <button onclick="alert('Order placed successfully!')" class="flex-1 bg-black text-white font-bold py-3.5 rounded-xl hover:bg-gray-800 transition transform hover:scale-105 shadow-md">
+                    <button onclick="alert('Order placed successfully!')" class="flex-1 bg-black text-white font-bold py-3.5 rounded-xl hover:bg-gray-800 transition shadow-md">
                       Buy Now
                     </button>
-                    <button onclick="alert('Added to cart successfully!')" class="flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition transform hover:scale-105 shadow-md">
+                    <button onclick="alert('Added to cart successfully!')" class="flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition shadow-md">
                       Add To Cart
                     </button>
                   </div>
@@ -180,72 +198,48 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden scroll-smooth">
       
-      {/* Custom CSS for fast high-impact animations */}
+      {/* Custom Styles matching your index.html theme */}
       <style jsx global>{`
-        @keyframes slideDown {
-          0% { transform: translateY(-50px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes slideUp {
-          0% { transform: translateY(50px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes zoomIn {
-          0% { transform: scale(0.85); opacity: 0; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes pulseGlow {
-          0%, 100% { transform: scale(1); filter: brightness(1); }
-          50% { transform: scale(1.03); filter: brightness(1.1); }
-        }
-        .animate-slide-down {
-          animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .animate-slide-up {
-          animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .animate-zoom-in {
-          animation: zoomIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .animate-pulse-glow {
-          animation: pulseGlow 3s infinite ease-in-out;
-        }
+        .gradient-text { background: linear-gradient(135deg, #d97706 0%, #ea580c 50%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08); transition: all 0.4s ease; }
+        .glass-card:hover { border-color: rgba(245, 158, 11, 0.6); transform: translateY(-4px); }
+        .glow-button { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
       `}</style>
-
-      {/* 1. Navbar with Slide Down Animation */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm animate-slide-down">
+      
+      {/* 1. Navbar */}
+      <header data-aos="fade-down" data-aos-duration="800" className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <a href="#" className="text-2xl font-black tracking-wider text-amber-600 flex items-center gap-2 transform hover:scale-110 transition duration-300">
-            <span className="animate-bounce inline-block">⚡</span> Sigma Mart
+          <a href="#" className="text-2xl font-black tracking-wider text-amber-600 flex items-center gap-2">
+            <span className="bg-amber-600 text-white p-1.5 rounded-xl text-lg font-bold shadow-md shadow-amber-500/30">⚡</span> Sigma Mart
           </a>
 
           <nav className="hidden md:flex items-center space-x-8 text-sm font-semibold text-gray-700">
-            <a href="#" className="hover:text-amber-600 transition transform hover:-translate-y-0.5">HOME</a>
-            <a href="#categories" className="hover:text-amber-600 transition transform hover:-translate-y-0.5">CATEGORIES</a>
-            <a href="#products" className="hover:text-amber-600 transition transform hover:-translate-y-0.5">PRODUCTS</a>
-            <a href="#about" className="hover:text-amber-600 transition transform hover:-translate-y-0.5">ABOUT</a>
-            <a href="#contact" className="hover:text-amber-600 transition transform hover:-translate-y-0.5">CONTACT</a>
+            <a href="#" className="hover:text-amber-600 transition">HOME</a>
+            <a href="#categories" className="hover:text-amber-600 transition">CATEGORIES</a>
+            <a href="#products" className="hover:text-amber-600 transition">PRODUCTS</a>
+            <a href="#about" className="hover:text-amber-600 transition">ABOUT</a>
+            <a href="#contact" className="hover:text-amber-600 transition">CONTACT</a>
           </nav>
 
           <div className="flex items-center space-x-4">
             {user ? (
-              <div className="flex items-center gap-3 animate-zoom-in">
-                <span className="text-xs font-semibold bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 shadow-sm">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold bg-gray-100 px-3 py-1.5 rounded-full text-gray-700">
                   {user.isAdmin ? '👑 Admin' : '👤 User'}: {user.email}
                 </span>
-                <button onClick={handleLogout} className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-bold text-xs hover:bg-gray-300 transition transform hover:scale-105">
+                <button onClick={handleLogout} className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-bold text-xs hover:bg-gray-300 transition">
                   Logout
                 </button>
               </div>
             ) : (
-              <button onClick={() => { setAuthMode('login'); setIsAuthOpen(true); }} className="border border-amber-600 text-amber-600 px-5 py-2 rounded-full font-bold text-sm hover:bg-amber-50 transition transform hover:scale-105 shadow-sm">
+              <button onClick={() => { setAuthMode('login'); setIsAuthOpen(true); }} className="border border-amber-600 text-amber-600 px-5 py-2 rounded-full font-bold text-sm hover:bg-amber-50 transition">
                 Login / Signup
               </button>
             )}
 
-            <a href="#products" className="bg-amber-600 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-amber-700 transition transform hover:scale-105 shadow-lg">
+            <a href="#products" className="bg-amber-600 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-amber-700 transition shadow-md">
               Cart 🛒
             </a>
           </div>
@@ -254,32 +248,32 @@ export default function Home() {
 
       {/* 2. ADMIN PANEL */}
       {user && user.isAdmin && (
-        <section className="bg-amber-50 border-b border-amber-200 py-12 px-4 sm:px-6 lg:px-8 animate-zoom-in">
-          <div className="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-amber-200 transform transition">
+        <section data-aos="zoom-in" className="bg-amber-50 border-b border-amber-200 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow-lg border border-amber-200">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black text-amber-800">👑 Admin Dashboard (Product Manager)</h2>
-              <span className="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full animate-pulse">Active Session</span>
+              <span className="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">Active Session</span>
             </div>
             
             <form onSubmit={handleAddProduct} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1">Product Title</label>
-                <input type="text" placeholder="e.g. Cyber Jacket" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition transform focus:scale-[1.01]" required />
+                <input type="text" placeholder="e.g. Cyber Jacket" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1">Price (Rs.)</label>
-                <input type="number" placeholder="e.g. 2299" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition transform focus:scale-[1.01]" required />
+                <input type="number" placeholder="e.g. 2299" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-gray-600 mb-1">Description</label>
-                <input type="text" placeholder="Full product description..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition transform focus:scale-[1.01]" />
+                <input type="text" placeholder="Full product description..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-gray-600 mb-1">Image URL (Direct Link)</label>
-                <input type="text" placeholder="https://i.ibb.co/xxxx/image.jpg" value={newImage} onChange={(e) => setNewImage(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition transform focus:scale-[1.01]" />
+                <input type="text" placeholder="https://i.ibb.co/xxxx/image.jpg" value={newImage} onChange={(e) => setNewImage(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
               </div>
               <div className="sm:col-span-2 mt-2">
-                <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition transform hover:scale-[1.02] active:scale-95 shadow-md">
+                <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition shadow-md">
                   + Add Product to Database 🚀
                 </button>
               </div>
@@ -288,29 +282,29 @@ export default function Home() {
         </section>
       )}
 
-      {/* 3. Hero Banner Section with Slide Up Animation */}
-      <section className="relative bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 py-24 px-4 sm:px-6 lg:px-8 border-b border-gray-100 overflow-hidden animate-slide-up">
+      {/* 3. Hero Banner Section with AOS Animations */}
+      <section className="relative bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 py-24 px-4 sm:px-6 lg:px-8 border-b border-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-12">
           <div className="space-y-6 text-center md:text-left">
-            <span className="bg-amber-200/80 text-amber-800 text-xs font-extrabold px-3.5 py-2 rounded-full uppercase tracking-wider inline-block animate-bounce shadow-sm">
-              Limited Time Offer 🔥
-            </span>
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
-              Get Free High-Tech Gear on Orders Above <span className="text-amber-600">Rs. 3,000!</span>
+            <div data-aos="fade-down" data-aos-duration="1000" className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold bg-amber-500/10 text-amber-800 rounded-full border border-amber-500/30 uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse"></span> Limited Time Offer 🔥
+            </div>
+            <h1 data-aos="zoom-in" data-aos-duration="1200" className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
+              Get Free High-Tech Gear on Orders Above <span className="gradient-text">Rs. 3,000!</span>
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000" className="text-gray-600 text-lg">
               Upgrade your lifestyle with exclusive tech essentials and cyber apparel delivered right to your doorstep.
             </p>
-            <div>
-              <a href="#products" className="inline-block bg-gray-950 text-white font-bold px-8 py-3.5 rounded-full hover:bg-amber-600 transition transform hover:scale-110 shadow-xl">
+            <div data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">
+              <a href="#products" className="glow-button inline-block bg-gray-950 text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-amber-600 transition shadow-lg">
                 Shop All Products 🚀
               </a>
             </div>
           </div>
-          <div className="flex justify-center">
-            <div className="relative w-full max-w-md h-80 bg-gradient-to-tr from-amber-200/40 to-orange-200/60 rounded-3xl border border-amber-200/60 shadow-2xl flex items-center justify-center p-6 animate-pulse-glow">
+          <div data-aos="fade-left" data-aos-duration="1200" className="flex justify-center">
+            <div className="relative w-full max-w-md h-80 bg-gradient-to-tr from-amber-200/40 to-orange-200/60 rounded-3xl border border-amber-200/60 shadow-xl flex items-center justify-center p-6">
               <div className="text-center">
-                <span className="text-7xl mb-3 block transform hover:rotate-12 transition duration-300">⚡🛍️</span>
+                <span className="text-6xl mb-3 block animate-bounce">⚡🛍️</span>
                 <p className="font-bold text-xl text-gray-800">Sigma Premium Collection</p>
                 <p className="text-sm text-gray-500 mt-1">Quality Assured • Fast Shipping</p>
               </div>
@@ -320,26 +314,26 @@ export default function Home() {
       </section>
 
       {/* 4. Categories Section */}
-      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 animate-slide-up">
-        <div className="text-center mb-12">
+      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div data-aos="fade-up" className="text-center mb-12">
           <h2 className="text-3xl font-extrabold text-gray-900">Shop By Categories</h2>
           <p className="text-gray-500 mt-2">Explore our curated collections designed for peak performance.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {['Cyber Apparel', 'Tech Gear', 'Accessories', 'Exclusive Drops'].map((cat, idx) => (
-            <div key={idx} className="bg-white border border-gray-100 rounded-2xl p-6 text-center shadow-md hover:shadow-2xl hover:border-amber-500 transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group">
-              <div className="h-16 bg-amber-100 rounded-full w-16 mx-auto mb-4 flex items-center justify-center text-amber-600 font-bold text-xl group-hover:bg-amber-600 group-hover:text-white transition transform group-hover:rotate-45 duration-300">
+            <div key={idx} data-aos="fade-up" data-aos-delay={idx * 150} className="glass-card rounded-2xl p-6 text-center cursor-pointer group">
+              <div className="h-16 bg-amber-100 rounded-full w-16 mx-auto mb-4 flex items-center justify-center text-amber-600 font-bold text-xl group-hover:bg-amber-600 group-hover:text-white transition">
                 📦
               </div>
-              <h3 className="font-bold text-gray-800 group-hover:text-amber-600 transition">{cat}</h3>
+              <h3 className="font-bold text-gray-800">{cat}</h3>
             </div>
           ))}
         </div>
       </section>
 
       {/* 5. Products Section */}
-      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50/50 rounded-3xl my-8 shadow-inner animate-slide-up">
-        <div className="flex items-center justify-between mb-12">
+      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50/50 rounded-3xl my-8">
+        <div data-aos="fade-up" className="flex items-center justify-between mb-12">
           <div>
             <h2 className="text-3xl font-extrabold text-gray-900">Featured Products</h2>
             <p className="text-gray-500 mt-1">Live inventory loaded straight from Supabase database.</p>
@@ -347,24 +341,24 @@ export default function Home() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl mb-6 text-center font-medium animate-zoom-in">
+          <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl mb-6 text-center font-medium">
             Error loading products: {error}
           </div>
         )}
 
         {loading ? (
-          <div className="text-center py-16 text-amber-600 font-bold text-xl animate-pulse">Loading amazing products... ⏳</div>
+          <div className="text-center py-16 text-gray-400 font-medium">Loading products... ⏳</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {products && products.length > 0 ? (
-              products.map((product, index) => (
-                <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between group animate-zoom-in" style={{ animationDelay: `${index * 0.08}s` }}>
+              products.map((product, idx) => (
+                <div key={product.id} data-aos="zoom-in-up" data-aos-delay={idx * 100} className="glass-card rounded-2xl p-4 flex flex-col justify-between group">
                   <div>
                     <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative cursor-pointer" onClick={() => openProductInNewTab(product)}>
                       <img 
                         src={product.image_url && product.image_url.trim() !== '' ? product.image_url : "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
                         alt={product.name} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
                       />
                     </div>
                     
@@ -380,11 +374,11 @@ export default function Home() {
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-amber-600 font-extrabold text-xl">Rs.{product.price}</span>
-                      <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full animate-pulse">In Stock</span>
+                      <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full">In Stock</span>
                     </div>
                     
                     <div className="flex gap-2">
-                      <button onClick={() => alert('Added to cart successfully!')} className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition transform hover:scale-105 shadow-sm text-sm">
+                      <button onClick={() => alert('Added to cart successfully!')} className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition shadow-sm text-sm">
                         Add to Cart 🛒
                       </button>
                       
@@ -392,7 +386,7 @@ export default function Home() {
                         <button 
                           type="button"
                           onClick={() => handleDeleteProduct(product.id)} 
-                          className="bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition transform hover:scale-110 text-sm cursor-pointer z-10 shadow-sm" 
+                          className="bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition text-sm cursor-pointer z-10" 
                           title="Delete Product"
                         >
                           🗑️
@@ -403,7 +397,7 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              <div className="col-span-full text-center py-16 text-gray-400 bg-white rounded-2xl border border-gray-100 shadow-sm animate-zoom-in">
+              <div className="col-span-full text-center py-16 text-gray-400 bg-white rounded-2xl border border-gray-100 shadow-sm">
                 No products found in database. 🛠️
               </div>
             )}
@@ -412,21 +406,23 @@ export default function Home() {
       </section>
 
       {/* 6. About Section */}
-      <section id="about" className="max-w-5xl mx-auto px-4 py-20 text-center animate-slide-up">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-6">About Sigma Mart</h2>
-        <p className="text-gray-600 text-lg leading-relaxed max-w-3xl mx-auto">
-          Sigma Mart is built to provide seamless, ultra-fast online shopping experiences. We bring top-tier products, secure transactions, and clean modern interfaces together to give you the ultimate digital shopping destination.
-        </p>
+      <section id="about" data-aos="fade-up" className="max-w-5xl mx-auto px-4 py-20 text-center">
+        <div className="glass-card p-10 rounded-3xl">
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-6">About Sigma Mart</h2>
+          <p className="text-gray-600 text-lg leading-relaxed max-w-3xl mx-auto">
+            Sigma Mart is built to provide seamless, ultra-fast online shopping experiences. We bring top-tier products, secure transactions, and clean modern interfaces together to give you the ultimate digital shopping destination.
+          </p>
+        </div>
       </section>
 
       {/* 7. Contact Section */}
-      <section id="contact" className="bg-gray-900 text-white py-20 px-4 animate-slide-up">
+      <section id="contact" data-aos="fade-up" className="bg-gray-900 text-white py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-extrabold mb-4">Get In Touch</h2>
           <p className="text-gray-400 mb-8">Have questions about our drops or need support? Reach out anytime.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <input type="email" placeholder="Enter your email address" className="px-6 py-3.5 rounded-full bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-amber-500 w-full sm:w-80 transition transform focus:scale-105" />
-            <button className="bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full hover:bg-amber-700 transition transform hover:scale-105 shadow-xl">
+            <input type="email" placeholder="Enter your email address" className="px-6 py-3.5 rounded-full bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-amber-500 w-full sm:w-80" />
+            <button className="bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full hover:bg-amber-700 transition">
               Contact Us ✉️
             </button>
           </div>
@@ -440,9 +436,9 @@ export default function Home() {
 
       {/* LOGIN / SIGNUP MODAL */}
       {isAuthOpen && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-gray-100 relative animate-zoom-in">
-            <button onClick={() => setIsAuthOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-700 font-bold text-lg transform hover:rotate-90 transition duration-300">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div data-aos="zoom-in" className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-gray-100 relative">
+            <button onClick={() => setIsAuthOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-700 font-bold text-lg">
               ✕
             </button>
             
@@ -456,13 +452,13 @@ export default function Home() {
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1">Email Address</label>
-                <input type="email" placeholder="Mahmoodoffice9@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition transform focus:scale-[1.01]" required />
+                <input type="email" placeholder="Mahmoodoffice9@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1">Password</label>
-                <input type="password" placeholder="12345678" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition transform focus:scale-[1.01]" required />
+                <input type="password" placeholder="12345678" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
-              <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition transform hover:scale-[1.02] shadow-md">
+              <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition shadow-md">
                 {authMode === 'login' ? 'Login' : 'Sign Up'}
               </button>
             </form>
