@@ -180,37 +180,53 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans">
+    <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden">
       
-      {/* Custom CSS Keyframes Styling */}
+      {/* Heavy & Continuous Custom CSS Keyframes */}
       <style jsx global>{`
-        @keyframes fadeInDown {
-          0% { opacity: 0; transform: translateY(-20px); }
-          100% { opacity: 1; transform: translateY(0); }
+        @keyframes headerGlow {
+          0%, 100% { border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.1); }
+          50% { border-color: rgba(245, 158, 11, 0.9); box-shadow: 0 6px 30px rgba(245, 158, 11, 0.35); }
         }
-        @keyframes fadeInUp {
-          0% { opacity: 0; transform: translateY(20px); }
-          100% { opacity: 1; transform: translateY(0); }
+        @keyframes superFloat {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(1deg); }
         }
-        @keyframes floatCard {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
+        @keyframes pulseGlow {
+          0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+          50% { transform: scale(1.02); box-shadow: 0 20px 40px rgba(245, 158, 11, 0.2); }
         }
-        .anim-fade-down {
-          animation: fadeInDown 0.8s ease-out forwards;
+        @keyframes wiggleText {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-2deg); }
+          75% { transform: rotate(2deg); }
         }
-        .anim-fade-up {
-          animation: fadeInUp 0.8s ease-out forwards;
+        @keyframes badgeBounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
         }
-        .anim-float {
-          animation: floatCard 4s ease-in-out infinite;
+        
+        .anim-header {
+          animation: headerGlow 3s infinite ease-in-out;
+        }
+        .anim-super-float {
+          animation: superFloat 3.5s infinite ease-in-out;
+        }
+        .anim-card-pulse {
+          animation: pulseGlow 4s infinite ease-in-out;
+        }
+        .anim-wiggle {
+          animation: wiggleText 2s infinite ease-in-out;
+        }
+        .anim-badge {
+          animation: badgeBounce 1.5s infinite ease-in-out;
         }
       `}</style>
 
       {/* 1. Navbar */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm anim-fade-down">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-amber-500 shadow-sm anim-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <a href="#" className="text-2xl font-black tracking-wider text-amber-600 flex items-center gap-2">
+          <a href="#" className="text-2xl font-black tracking-wider text-amber-600 flex items-center gap-2 anim-wiggle">
             <span>⚡</span> Sigma Mart
           </a>
 
@@ -225,7 +241,7 @@ export default function Home() {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center gap-3">
-                <span className="text-xs font-semibold bg-gray-100 px-3 py-1.5 rounded-full text-gray-700">
+                <span className="text-xs font-semibold bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full text-amber-900 anim-badge">
                   {user.isAdmin ? '👑 Admin' : '👤 User'}: {user.email}
                 </span>
                 <button onClick={handleLogout} className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-bold text-xs hover:bg-gray-300 transition">
@@ -233,12 +249,12 @@ export default function Home() {
                 </button>
               </div>
             ) : (
-              <button onClick={() => { setAuthMode('login'); setIsAuthOpen(true); }} className="border border-amber-600 text-amber-600 px-5 py-2 rounded-full font-bold text-sm hover:bg-amber-50 transition">
+              <button onClick={() => { setAuthMode('login'); setIsAuthOpen(true); }} className="border-2 border-amber-600 text-amber-600 px-5 py-2 rounded-full font-bold text-sm hover:bg-amber-50 transition shadow-sm">
                 Login / Signup
               </button>
             )}
 
-            <a href="#products" className="bg-amber-600 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-amber-700 transition shadow-md">
+            <a href="#products" className="bg-amber-600 text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-amber-700 transition shadow-lg">
               Cart 🛒
             </a>
           </div>
@@ -247,11 +263,11 @@ export default function Home() {
 
       {/* 2. ADMIN PANEL */}
       {user && user.isAdmin && (
-        <section className="bg-amber-50 border-b border-amber-200 py-12 px-4 sm:px-6 lg:px-8 anim-fade-up">
-          <div className="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow-lg border border-amber-200">
+        <section className="bg-amber-50 border-b border-amber-200 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-2 border-amber-300 anim-card-pulse">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black text-amber-800">👑 Admin Dashboard (Product Manager)</h2>
-              <span className="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">Active Session</span>
+              <span className="bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full anim-badge">Active Session</span>
             </div>
             
             <form onSubmit={handleAddProduct} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -272,7 +288,7 @@ export default function Home() {
                 <input type="text" placeholder="https://i.ibb.co/xxxx/image.jpg" value={newImage} onChange={(e) => setNewImage(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
               </div>
               <div className="sm:col-span-2 mt-2">
-                <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition shadow-md">
+                <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition shadow-lg">
                   + Add Product to Database 🚀
                 </button>
               </div>
@@ -281,11 +297,11 @@ export default function Home() {
         </section>
       )}
 
-      {/* 3. Hero Banner Section with Floating Animation */}
+      {/* 3. Hero Banner Section */}
       <section className="relative bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 py-24 px-4 sm:px-6 lg:px-8 border-b border-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-12">
-          <div className="space-y-6 text-center md:text-left anim-fade-up">
-            <span className="bg-amber-200/60 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+          <div className="space-y-6 text-center md:text-left">
+            <span className="bg-amber-200 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider inline-block anim-badge">
               Limited Time Offer 🔥
             </span>
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
@@ -295,15 +311,15 @@ export default function Home() {
               Upgrade your lifestyle with exclusive tech essentials and cyber apparel delivered right to your doorstep.
             </p>
             <div>
-              <a href="#products" className="inline-block bg-gray-950 text-white font-bold px-8 py-3.5 rounded-full hover:bg-amber-600 transition shadow-lg">
+              <a href="#products" className="inline-block bg-gray-950 text-white font-bold px-8 py-3.5 rounded-full hover:bg-amber-600 transition shadow-xl">
                 Shop All Products 🚀
               </a>
             </div>
           </div>
-          <div className="flex justify-center anim-float">
-            <div className="relative w-full max-w-md h-80 bg-gradient-to-tr from-amber-200/40 to-orange-200/60 rounded-3xl border border-amber-200/60 shadow-xl flex items-center justify-center p-6">
+          <div className="flex justify-center anim-super-float">
+            <div className="relative w-full max-w-md h-80 bg-gradient-to-tr from-amber-200/60 to-orange-200/80 rounded-3xl border-2 border-amber-300 shadow-2xl flex items-center justify-center p-6">
               <div className="text-center">
-                <span className="text-6xl mb-3 block">⚡🛍️</span>
+                <span className="text-6xl mb-3 block anim-wiggle">⚡🛍️</span>
                 <p className="font-bold text-xl text-gray-800">Sigma Premium Collection</p>
                 <p className="text-sm text-gray-500 mt-1">Quality Assured • Fast Shipping</p>
               </div>
@@ -313,15 +329,15 @@ export default function Home() {
       </section>
 
       {/* 4. Categories Section */}
-      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 anim-fade-up">
+      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-extrabold text-gray-900">Shop By Categories</h2>
           <p className="text-gray-500 mt-2">Explore our curated collections designed for peak performance.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {['Cyber Apparel', 'Tech Gear', 'Accessories', 'Exclusive Drops'].map((cat, idx) => (
-            <div key={idx} className="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center hover:shadow-lg hover:border-amber-500 transition cursor-pointer group">
-              <div className="h-16 bg-amber-100 rounded-full w-16 mx-auto mb-4 flex items-center justify-center text-amber-600 font-bold text-xl group-hover:bg-amber-600 group-hover:text-white transition">
+            <div key={idx} className="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center hover:shadow-xl hover:border-amber-500 transition cursor-pointer group anim-card-pulse">
+              <div className="h-16 bg-amber-100 rounded-full w-16 mx-auto mb-4 flex items-center justify-center text-amber-600 font-bold text-xl group-hover:bg-amber-600 group-hover:text-white transition anim-badge">
                 📦
               </div>
               <h3 className="font-bold text-gray-800">{cat}</h3>
@@ -330,8 +346,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Products Section */}
-      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50/50 rounded-3xl my-8 anim-fade-up">
+      {/* 5. Products Section with Heavy Product Card Animations */}
+      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-amber-50/30 rounded-3xl my-8 border border-amber-100">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h2 className="text-3xl font-extrabold text-gray-900">Featured Products</h2>
@@ -346,24 +362,27 @@ export default function Home() {
         )}
 
         {loading ? (
-          <div className="text-center py-16 text-gray-400 font-medium">Loading products... ⏳</div>
+          <div className="text-center py-16 text-gray-400 font-medium anim-badge">Loading products... ⏳</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {products && products.length > 0 ? (
               products.map((product) => (
-                <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl transition flex flex-col justify-between group">
+                <div key={product.id} className="bg-white border-2 border-amber-200 rounded-2xl p-4 shadow-lg hover:shadow-2xl transition flex flex-col justify-between group anim-card-pulse">
                   <div>
                     <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative cursor-pointer" onClick={() => openProductInNewTab(product)}>
                       <img 
                         src={product.image_url && product.image_url.trim() !== '' ? product.image_url : "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
                         alt={product.name} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+                        className="w-full h-full object-cover group-hover:scale-110 transition duration-500" 
                       />
+                      <div className="absolute top-3 right-3 bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md anim-badge">
+                        🔥 Hot
+                      </div>
                     </div>
                     
                     <button 
                       onClick={() => openProductInNewTab(product)} 
-                      className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-300 decoration-2 underline-offset-4 cursor-pointer"
+                      className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-400 decoration-2 underline-offset-4 cursor-pointer"
                     >
                       {product.name} ↗
                     </button>
@@ -372,12 +391,12 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-amber-600 font-extrabold text-xl">Rs.{product.price}</span>
-                      <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full">In Stock</span>
+                      <span className="text-amber-600 font-black text-xl">Rs.{product.price}</span>
+                      <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full anim-badge">In Stock</span>
                     </div>
                     
                     <div className="flex gap-2">
-                      <button className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition shadow-sm text-sm">
+                      <button className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition shadow-md text-sm">
                         Add to Cart 🛒
                       </button>
                       
@@ -434,7 +453,7 @@ export default function Home() {
       {/* LOGIN / SIGNUP MODAL */}
       {isAuthOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-gray-100 relative">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-gray-100 relative anim-card-pulse">
             <button onClick={() => setIsAuthOpen(false)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-700 font-bold text-lg">
               ✕
             </button>
@@ -453,7 +472,7 @@ export default function Home() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1">Password</label>
-                <input type="password" placeholder="12345678" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
+                <input type="password" placeholder="12345678" value[cite: 1]={{}} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
               <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition shadow-md">
                 {authMode === 'login' ? 'Login' : 'Sign Up'}
