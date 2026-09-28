@@ -23,7 +23,7 @@ export default function Home() {
   const [newDesc, setNewDesc] = useState('');
   const [newImage, setNewImage] = useState('');
 
-  // Selected product for modal view in new tab alternative
+  // Selected product for modal preview view
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
@@ -93,16 +93,25 @@ export default function Home() {
     }
   };
 
-  // Fixed Delete Function
+  // Robust Delete Function with strict error feedback
   const handleDeleteProduct = async (id) => {
     if (!confirm('Kya aap waqai is product ko delete karna chahte hain?')) return;
 
-    const { error } = await supabase.from('products').delete().eq('id', id);
-    if (error) {
-      alert('Error deleting product: ' + error.message);
-    } else {
-      alert('Product successfully delete ho gaya! 🗑️');
-      fetchProducts();
+    try {
+      console.log("Deleting product ID:", id);
+      const { data, error } = await supabase.from('products').delete().eq('id', id).select();
+      
+      if (error) {
+        console.error("Supabase delete error:", error);
+        alert('Delete failed: ' + error.message);
+      } else {
+        console.log("Deleted successfully:", data);
+        alert('Product successfully delete ho gaya! 🗑️');
+        fetchProducts();
+      }
+    } catch (err) {
+      console.error("Unexpected error during delete:", err);
+      alert('Unexpected error occurred while deleting.');
     }
   };
 
@@ -263,7 +272,6 @@ export default function Home() {
                       />
                     </div>
                     
-                    {/* Clickable Title opens Product Detail Modal cleanly */}
                     <button 
                       onClick={() => setSelectedProduct(product)} 
                       className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-300 decoration-2 underline-offset-4"
