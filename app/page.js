@@ -18,7 +18,7 @@ export default function Home() {
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null); // { email, isAdmin }
+  const [user, setUser] = useState(null);
 
   // Admin New Product Form State
   const [newTitle, setNewTitle] = useState('');
@@ -81,7 +81,7 @@ export default function Home() {
         name: newTitle,
         price: parseFloat(newPrice),
         description: newDesc || 'High quality sigma gear.',
-        image_url: newImage || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'
+        image_url: newImage && newImage.trim() !== '' ? newImage : 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'
       }
     ]).select();
 
@@ -93,7 +93,7 @@ export default function Home() {
       setNewPrice('');
       setNewDesc('');
       setNewImage('');
-      fetchProducts(); // Refresh list
+      fetchProducts();
     }
   };
 
@@ -106,7 +106,7 @@ export default function Home() {
       alert('Error deleting product: ' + error.message);
     } else {
       alert('Product deleted successfully! 🗑️');
-      fetchProducts(); // Refresh list
+      fetchProducts();
     }
   };
 
@@ -151,7 +151,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 2. ADMIN PANEL (Only visible if user is admin Mahmoodoffice9@gmail.com) */}
+      {/* 2. ADMIN PANEL */}
       {user && user.isAdmin && (
         <section className="bg-amber-50 border-b border-amber-200 py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow-lg border border-amber-200">
@@ -174,8 +174,8 @@ export default function Home() {
                 <input type="text" placeholder="Short description..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-gray-600 mb-1">Image URL (Optional)</label>
-                <input type="text" placeholder="https://image-link.com/photo.jpg" value={newImage} onChange={(e) => setNewImage(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
+                <label className="block text-xs font-bold text-gray-600 mb-1">Image URL (Direct Link)</label>
+                <input type="text" placeholder="https://i.ibb.co/xxxx/image.jpg" value={newImage} onChange={(e) => setNewImage(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
               </div>
               <div className="sm:col-span-2 mt-2">
                 <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition shadow-md">
@@ -256,40 +256,70 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {products && products.length > 0 ? (
-              products.map((product) => (
-                <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl transition flex flex-col justify-between group">
-                  <div>
-                    <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative">
-                      <img 
-                        src={product.image_url || "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
-                        alt={product.name} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
-                      />
-                    </div>
-                    <h3 className="font-bold text-lg text-gray-900 mb-1">{product.name}</h3>
-                    <p className="text-gray-500 text-sm mb-4 line-clamp-2">{product.description || "High quality sigma gear built for performance."}</p>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-amber-600 font-extrabold text-xl">${product.price}</span>
-                      <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full">In Stock</span>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <button className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition shadow-sm text-sm">
-                        Add to Cart 🛒
-                      </button>
+              products.map((product) => {
+                // Create a data URL or safe view link for opening product in a new tab with details
+                const detailContent = `data:text/html;charset=utf-8,
+                  <html>
+                    <head><title>${product.name} - Sigma Mart</title><script src="https://cdn.tailwindcss.com"></script></head>
+                    <body class="bg-gray-950 text-white font-sans p-8">
+                      <div class="max-w-2xl mx-auto bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-2xl">
+                        <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-80 object-cover rounded-2xl mb-6 border border-gray-800" />
+                        <h1 class="text-3xl font-black text-amber-500 mb-2">${product.name}</h1>
+                        <p class="text-2xl font-bold text-white mb-4">$${product.price}</p>
+                        <hr class="border-gray-800 my-4">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Description</h3>
+                        <p class="text-gray-300 text-lg leading-relaxed mb-8">${product.description || 'No description provided.'}</p>
+                        <a href="/" class="inline-block bg-amber-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-amber-700 transition">← Back to Sigma Mart</a>
+                      </div>
+                    </body>
+                  </html>`;
+
+                return (
+                  <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl transition flex flex-col justify-between group">
+                    <div>
+                      <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative">
+                        <img 
+                          src={product.image_url && product.image_url.trim() !== '' ? product.image_url : "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+                        />
+                      </div>
                       
-                      {/* Delete Button visible only to Admin */}
-                      {user && user.isAdmin && (
-                        <button onClick={() => handleDeleteProduct(product.id)} className="bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition text-sm">
-                          🗑️
+                      {/* Product Title Clickable -> Opens in New Tab with full details */}
+                      <a 
+                        href={detailContent} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition block underline decoration-amber-300 decoration-2 underline-offset-4"
+                        title="Click to view details in new tab"
+                      >
+                        {product.name} ↗
+                      </a>
+
+                      <p className="text-gray-500 text-sm mb-4 line-clamp-2">{product.description || "High quality sigma gear built for performance."}</p>
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-amber-600 font-extrabold text-xl">${product.price}</span>
+                        <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full">In Stock</span>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <button className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition shadow-sm text-sm">
+                          Add to Cart 🛒
                         </button>
-                      )}
+                        
+                        {/* Delete Button visible only to Admin */}
+                        {user && user.isAdmin && (
+                          <button onClick={() => handleDeleteProduct(product.id)} className="bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition text-sm" title="Delete Product">
+                            🗑️
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="col-span-full text-center py-16 text-gray-400 bg-white rounded-2xl border border-gray-100 shadow-sm">
                 No products found in database. 🛠️
