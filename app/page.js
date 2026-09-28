@@ -346,7 +346,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Products Section with Heavy Product Card Animations */}
+      {/* 5. Products Section */}
       <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-amber-50/30 rounded-3xl my-8 border border-amber-100">
         <div className="flex items-center justify-between mb-12">
           <div>
@@ -472,7 +472,7 @@ export default function Home() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1">Password</label>
-                <input type="password" placeholder="12345678" value[cite: 1]={{}} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
+                <input type="password" placeholder="12345678" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-200 p-3.5 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
               <button type="submit" className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition shadow-md">
                 {authMode === 'login' ? 'Login' : 'Sign Up'}
