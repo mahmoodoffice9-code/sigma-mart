@@ -107,7 +107,6 @@ export default function Home() {
     }
   };
 
-  // Open Product Details in a Brand New Tab styled like the reference e-commerce design
   const openProductInNewTab = (product) => {
     const newWindow = window.open('', '_blank');
     if (newWindow) {
@@ -127,14 +126,12 @@ export default function Home() {
 
             <main class="max-w-7xl mx-auto px-6 py-12">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                <!-- Left: Product Image -->
                 <div>
                   <div class="w-full h-[450px] bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 shadow-inner flex items-center justify-center">
                     <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-full object-cover" />
                   </div>
                 </div>
 
-                <!-- Right: Product Details -->
                 <div class="space-y-6">
                   <h1 class="text-3xl font-extrabold text-gray-900 leading-snug">${product.name}</h1>
                   
@@ -170,7 +167,6 @@ export default function Home() {
                 </div>
               </div>
 
-              <!-- Bottom: Product Description Section -->
               <div class="mt-12 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
                 <h3 class="text-xl font-extrabold text-gray-900 mb-4 pb-3 border-b border-gray-100">Product Description</h3>
                 <p class="text-gray-700 text-base leading-relaxed whitespace-pre-line">${product.description || 'No detailed description provided for this product.'}</p>
@@ -186,8 +182,33 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
       
+      {/* Custom CSS Keyframes Styling */}
+      <style jsx global>{`
+        @keyframes fadeInDown {
+          0% { opacity: 0; transform: translateY(-20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes floatCard {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-12px); }
+        }
+        .anim-fade-down {
+          animation: fadeInDown 0.8s ease-out forwards;
+        }
+        .anim-fade-up {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .anim-float {
+          animation: floatCard 4s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* 1. Navbar */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm anim-fade-down">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <a href="#" className="text-2xl font-black tracking-wider text-amber-600 flex items-center gap-2">
             <span>⚡</span> Sigma Mart
@@ -226,7 +247,7 @@ export default function Home() {
 
       {/* 2. ADMIN PANEL */}
       {user && user.isAdmin && (
-        <section className="bg-amber-50 border-b border-amber-200 py-12 px-4 sm:px-6 lg:px-8">
+        <section className="bg-amber-50 border-b border-amber-200 py-12 px-4 sm:px-6 lg:px-8 anim-fade-up">
           <div className="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow-lg border border-amber-200">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-black text-amber-800">👑 Admin Dashboard (Product Manager)</h2>
@@ -260,10 +281,10 @@ export default function Home() {
         </section>
       )}
 
-      {/* 3. Hero Banner Section */}
+      {/* 3. Hero Banner Section with Floating Animation */}
       <section className="relative bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 py-24 px-4 sm:px-6 lg:px-8 border-b border-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-12">
-          <div className="space-y-6 text-center md:text-left">
+          <div className="space-y-6 text-center md:text-left anim-fade-up">
             <span className="bg-amber-200/60 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
               Limited Time Offer 🔥
             </span>
@@ -279,7 +300,7 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center anim-float">
             <div className="relative w-full max-w-md h-80 bg-gradient-to-tr from-amber-200/40 to-orange-200/60 rounded-3xl border border-amber-200/60 shadow-xl flex items-center justify-center p-6">
               <div className="text-center">
                 <span className="text-6xl mb-3 block">⚡🛍️</span>
@@ -292,7 +313,7 @@ export default function Home() {
       </section>
 
       {/* 4. Categories Section */}
-      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 anim-fade-up">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-extrabold text-gray-900">Shop By Categories</h2>
           <p className="text-gray-500 mt-2">Explore our curated collections designed for peak performance.</p>
@@ -310,7 +331,7 @@ export default function Home() {
       </section>
 
       {/* 5. Products Section */}
-      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50/50 rounded-3xl my-8">
+      <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50/50 rounded-3xl my-8 anim-fade-up">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h2 className="text-3xl font-extrabold text-gray-900">Featured Products</h2>
@@ -340,7 +361,6 @@ export default function Home() {
                       />
                     </div>
                     
-                    {/* Clickable Title opens Product in reference style New Tab */}
                     <button 
                       onClick={() => openProductInNewTab(product)} 
                       className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-300 decoration-2 underline-offset-4 cursor-pointer"
@@ -361,7 +381,6 @@ export default function Home() {
                         Add to Cart 🛒
                       </button>
                       
-                      {/* Admin Delete Button */}
                       {user && user.isAdmin && (
                         <button 
                           type="button"
