@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase client initialization
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -13,20 +12,20 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Auth & Admin State
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
+  const [authMode, setAuthMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  // Admin New Product Form State
   const [newTitle, setNewTitle] = useState('');
   const [newPrice, setNewPrice] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newImage, setNewImage] = useState('');
 
-  // Fetch Products on Load
+  // Selected product for modal view in new tab alternative
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -42,7 +41,6 @@ export default function Home() {
     setLoading(false);
   }
 
-  // Handle Login / Signup Submission
   const handleAuthSubmit = (e) => {
     e.preventDefault();
     if (authMode === 'login') {
@@ -62,13 +60,11 @@ export default function Home() {
     setPassword('');
   };
 
-  // Handle Logout
   const handleLogout = () => {
     setUser(null);
     alert('Logged out successfully.');
   };
 
-  // Admin: Add Product to Supabase
   const handleAddProduct = async (e) => {
     e.preventDefault();
     if (!newTitle || !newPrice) {
@@ -97,15 +93,15 @@ export default function Home() {
     }
   };
 
-  // Admin: Delete Product from Supabase
+  // Fixed Delete Function
   const handleDeleteProduct = async (id) => {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    if (!confirm('Kya aap waqai is product ko delete karna chahte hain?')) return;
 
     const { error } = await supabase.from('products').delete().eq('id', id);
     if (error) {
       alert('Error deleting product: ' + error.message);
     } else {
-      alert('Product deleted successfully! 🗑️');
+      alert('Product successfully delete ho gaya! 🗑️');
       fetchProducts();
     }
   };
@@ -256,70 +252,53 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {products && products.length > 0 ? (
-              products.map((product) => {
-                // Create a data URL or safe view link for opening product in a new tab with details
-                const detailContent = `data:text/html;charset=utf-8,
-                  <html>
-                    <head><title>${product.name} - Sigma Mart</title><script src="https://cdn.tailwindcss.com"></script></head>
-                    <body class="bg-gray-950 text-white font-sans p-8">
-                      <div class="max-w-2xl mx-auto bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-2xl">
-                        <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-80 object-cover rounded-2xl mb-6 border border-gray-800" />
-                        <h1 class="text-3xl font-black text-amber-500 mb-2">${product.name}</h1>
-                        <p class="text-2xl font-bold text-white mb-4">$${product.price}</p>
-                        <hr class="border-gray-800 my-4">
-                        <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Description</h3>
-                        <p class="text-gray-300 text-lg leading-relaxed mb-8">${product.description || 'No description provided.'}</p>
-                        <a href="/" class="inline-block bg-amber-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-amber-700 transition">← Back to Sigma Mart</a>
-                      </div>
-                    </body>
-                  </html>`;
-
-                return (
-                  <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl transition flex flex-col justify-between group">
-                    <div>
-                      <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative">
-                        <img 
-                          src={product.image_url && product.image_url.trim() !== '' ? product.image_url : "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
-                          alt={product.name} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
-                        />
-                      </div>
-                      
-                      {/* Product Title Clickable -> Opens in New Tab with full details */}
-                      <a 
-                        href={detailContent} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition block underline decoration-amber-300 decoration-2 underline-offset-4"
-                        title="Click to view details in new tab"
-                      >
-                        {product.name} ↗
-                      </a>
-
-                      <p className="text-gray-500 text-sm mb-4 line-clamp-2">{product.description || "High quality sigma gear built for performance."}</p>
+              products.map((product) => (
+                <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl transition flex flex-col justify-between group">
+                  <div>
+                    <div className="h-52 bg-gray-100 rounded-xl mb-4 overflow-hidden relative cursor-pointer" onClick={() => setSelectedProduct(product)}>
+                      <img 
+                        src={product.image_url && product.image_url.trim() !== '' ? product.image_url : "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+                      />
                     </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-amber-600 font-extrabold text-xl">${product.price}</span>
-                        <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full">In Stock</span>
-                      </div>
+                    
+                    {/* Clickable Title opens Product Detail Modal cleanly */}
+                    <button 
+                      onClick={() => setSelectedProduct(product)} 
+                      className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-300 decoration-2 underline-offset-4"
+                    >
+                      {product.name} ↗
+                    </button>
+
+                    <p className="text-gray-500 text-sm mb-4 line-clamp-2">{product.description || "High quality sigma gear built for performance."}</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-amber-600 font-extrabold text-xl">${product.price}</span>
+                      <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full">In Stock</span>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <button className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition shadow-sm text-sm">
+                        Add to Cart 🛒
+                      </button>
                       
-                      <div className="flex gap-2">
-                        <button className="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-amber-600 transition shadow-sm text-sm">
-                          Add to Cart 🛒
+                      {/* Admin Delete Button */}
+                      {user && user.isAdmin && (
+                        <button 
+                          type="button"
+                          onClick={() => handleDeleteProduct(product.id)} 
+                          className="bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition text-sm cursor-pointer z-10" 
+                          title="Delete Product"
+                        >
+                          🗑️
                         </button>
-                        
-                        {/* Delete Button visible only to Admin */}
-                        {user && user.isAdmin && (
-                          <button onClick={() => handleDeleteProduct(product.id)} className="bg-red-50 text-red-600 border border-red-200 px-4 py-3 rounded-xl font-bold hover:bg-red-600 hover:text-white transition text-sm" title="Delete Product">
-                            🗑️
-                          </button>
-                        )}
-                      </div>
+                      )}
                     </div>
                   </div>
-                );
-              })
+                </div>
+              ))
             ) : (
               <div className="col-span-full text-center py-16 text-gray-400 bg-white rounded-2xl border border-gray-100 shadow-sm">
                 No products found in database. 🛠️
@@ -328,6 +307,37 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      {/* PRODUCT DETAIL POPUP MODAL */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-gray-900 text-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-gray-800 relative">
+            <button onClick={() => setSelectedProduct(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white font-bold text-xl">
+              ✕
+            </button>
+            
+            <div className="h-64 bg-gray-800 rounded-2xl mb-6 overflow-hidden border border-gray-800">
+              <img 
+                src={selectedProduct.image_url || "https://images.unsplash.com/photo-1556905055-8f358a7a47b2"} 
+                alt={selectedProduct.name} 
+                className="w-full h-full object-cover" 
+              />
+            </div>
+
+            <h2 className="text-3xl font-black text-amber-400 mb-2">{selectedProduct.name}</h2>
+            <p className="text-2xl font-bold text-white mb-4">${selectedProduct.price}</p>
+            
+            <hr className="border-gray-800 my-4" />
+            
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Product Description</h3>
+            <p className="text-gray-300 text-base leading-relaxed mb-8">{selectedProduct.description || "No description provided."}</p>
+
+            <button onClick={() => setSelectedProduct(null)} className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition">
+              Close Preview
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 6. About Section */}
       <section id="about" className="max-w-5xl mx-auto px-4 py-20 text-center">
