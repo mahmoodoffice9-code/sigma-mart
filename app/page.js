@@ -90,7 +90,6 @@ export default function Home() {
     }
   };
 
-  // Fixed & Polished Delete Function
   const handleDeleteProduct = async (id) => {
     if (!confirm('Kya aap waqai is product ko delete karna chahte hain?')) return;
 
@@ -108,26 +107,75 @@ export default function Home() {
     }
   };
 
-  // Open Product Details in a Brand New Tab cleanly using window.open
+  // Open Product Details in a Brand New Tab styled like the reference e-commerce design
   const openProductInNewTab = (product) => {
     const newWindow = window.open('', '_blank');
     if (newWindow) {
       newWindow.document.write(`
         <html>
           <head>
-            <title>${product.name} - Sigma Mart</title>
+            <title>${product.name} - Online Shop</title>
             <script src="https://cdn.tailwindcss.com"></script>
           </head>
-          <body class="bg-gray-950 text-white font-sans p-10">
-            <div class="max-w-xl mx-auto bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-2xl mt-10">
-              <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-80 object-cover rounded-2xl mb-6 border border-gray-800 shadow-md" />
-              <h1 class="text-3xl font-black text-amber-400 mb-2">${product.name}</h1>
-              <p class="text-2xl font-bold text-emerald-400 mb-6">$${product.price}</p>
-              <hr class="border-gray-800 my-4" />
-              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</h3>
-              <p class="text-gray-300 text-base leading-relaxed mb-8">${product.description || 'No description provided.'}</p>
-              <button onclick="window.close()" class="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl hover:bg-amber-700 transition">Close Tab ✕</button>
-            </div>
+          <body class="bg-white text-gray-900 font-sans">
+            <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shadow-sm">
+              <div class="text-2xl font-black text-orange-600 flex items-center gap-2">
+                <span>🛒</span> ONLINE SHOP
+              </div>
+              <button onclick="window.close()" class="text-sm font-bold bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-gray-700 transition">✕ Close Tab</button>
+            </header>
+
+            <main class="max-w-7xl mx-auto px-6 py-12">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                <!-- Left: Product Image -->
+                <div>
+                  <div class="w-full h-[450px] bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 shadow-inner flex items-center justify-center">
+                    <img src="${product.image_url || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2'}" class="w-full h-full object-cover" />
+                  </div>
+                </div>
+
+                <!-- Right: Product Details -->
+                <div class="space-y-6">
+                  <h1 class="text-3xl font-extrabold text-gray-900 leading-snug">${product.name}</h1>
+                  
+                  <div class="flex items-center gap-3">
+                    <span class="text-amber-500 text-lg">★★★★★</span>
+                    <span class="text-sm text-gray-500 font-medium">(0) Reviews</span>
+                  </div>
+
+                  <div class="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-full inline-block">
+                    ✓ 50 In Stock
+                  </div>
+
+                  <div class="text-3xl font-black text-orange-600">
+                    Rs.${product.price}
+                  </div>
+
+                  <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 text-sm space-y-2">
+                    <div class="flex justify-between font-bold text-gray-800">
+                      <span>Total price:</span>
+                      <span class="text-orange-600">Rs.${product.price}</span>
+                    </div>
+                    <div class="text-gray-500 text-xs">Tax: Incl.</div>
+                  </div>
+
+                  <div class="flex gap-4 pt-2">
+                    <button onclick="alert('Order placed successfully!')" class="flex-1 bg-black text-white font-bold py-3.5 rounded-xl hover:bg-gray-800 transition shadow-md">
+                      Buy Now
+                    </button>
+                    <button onclick="alert('Added to cart successfully!')" class="flex-1 bg-orange-500 text-white font-bold py-3.5 rounded-xl hover:bg-orange-600 transition shadow-md">
+                      Add To Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom: Product Description Section -->
+              <div class="mt-12 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                <h3 class="text-xl font-extrabold text-gray-900 mb-4 pb-3 border-b border-gray-100">Product Description</h3>
+                <p class="text-gray-700 text-base leading-relaxed whitespace-pre-line">${product.description || 'No detailed description provided for this product.'}</p>
+              </div>
+            </main>
           </body>
         </html>
       `);
@@ -191,12 +239,12 @@ export default function Home() {
                 <input type="text" placeholder="e.g. Cyber Jacket" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1">Price ($)</label>
-                <input type="number" placeholder="e.g. 59.99" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
+                <label className="block text-xs font-bold text-gray-600 mb-1">Price (Rs.)</label>
+                <input type="number" placeholder="e.g. 2299" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" required />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-gray-600 mb-1">Description</label>
-                <input type="text" placeholder="Short description..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
+                <input type="text" placeholder="Full product description..." value={newDesc} onChange={(e) => setNewDesc(e.target.value)} className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:outline-none focus:border-amber-500" />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-gray-600 mb-1">Image URL (Direct Link)</label>
@@ -292,7 +340,7 @@ export default function Home() {
                       />
                     </div>
                     
-                    {/* Clickable Title opens Product in a Brand New Tab */}
+                    {/* Clickable Title opens Product in reference style New Tab */}
                     <button 
                       onClick={() => openProductInNewTab(product)} 
                       className="font-bold text-lg text-gray-900 mb-1 hover:text-amber-600 transition text-left block w-full underline decoration-amber-300 decoration-2 underline-offset-4 cursor-pointer"
@@ -304,7 +352,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-amber-600 font-extrabold text-xl">${product.price}</span>
+                      <span className="text-amber-600 font-extrabold text-xl">Rs.{product.price}</span>
                       <span className="text-xs bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-1 rounded-full">In Stock</span>
                     </div>
                     
