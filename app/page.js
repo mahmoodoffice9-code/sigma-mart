@@ -23,6 +23,14 @@ export default function Home() {
   const [newDesc, setNewDesc] = useState('');
   const [newImage, setNewImage] = useState('');
 
+  // Categories data with specific images
+  const categories = [
+    { name: 'Cyber Apparel', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f' },
+    { name: 'Tech Gear', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475' },
+    { name: 'Accessories', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30' },
+    { name: 'Exclusive Drops', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e' }
+  ];
+
   useEffect(() => {
     // Load AOS animations library dynamically on client side
     const script = document.createElement('script');
@@ -200,12 +208,25 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans overflow-x-hidden scroll-smooth">
       
-      {/* Custom Styles matching your index.html theme */}
+      {/* Custom Styles matching theme + Marquee Animation */}
       <style jsx global>{`
         .gradient-text { background: linear-gradient(135deg, #d97706 0%, #ea580c 50%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08); transition: all 0.4s ease; }
         .glass-card:hover { border-color: rgba(245, 158, 11, 0.6); transform: translateY(-4px); }
         .glow-button { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          display: flex;
+          width: max-content;
+          animation: marquee 25s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
       `}</style>
       
       {/* 1. Navbar */}
@@ -313,21 +334,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. Categories Section */}
-      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* 4. Categories Section with Right-to-Left Infinite Scroll & Images */}
+      <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 overflow-hidden">
         <div data-aos="fade-up" className="text-center mb-12">
           <h2 className="text-3xl font-extrabold text-gray-900">Shop By Categories</h2>
           <p className="text-gray-500 mt-2">Explore our curated collections designed for peak performance.</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {['Cyber Apparel', 'Tech Gear', 'Accessories', 'Exclusive Drops'].map((cat, idx) => (
-            <div key={idx} data-aos="fade-up" data-aos-delay={idx * 150} className="glass-card rounded-2xl p-6 text-center cursor-pointer group">
-              <div className="h-16 bg-amber-100 rounded-full w-16 mx-auto mb-4 flex items-center justify-center text-amber-600 font-bold text-xl group-hover:bg-amber-600 group-hover:text-white transition">
-                📦
+
+        <div className="relative w-full overflow-hidden py-4">
+          <div className="animate-marquee flex gap-6">
+            {/* Duplicating the categories array for seamless infinite sliding loop */}
+            {[...categories, ...categories, ...categories].map((cat, idx) => (
+              <div key={idx} className="glass-card rounded-2xl p-4 text-center cursor-pointer group w-64 flex-shrink-0">
+                <div className="h-36 bg-gray-100 rounded-xl mb-4 overflow-hidden relative">
+                  <img 
+                    src={cat.image} 
+                    alt={cat.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+                  />
+                </div>
+                <h3 className="font-bold text-gray-800 text-lg">{cat.name}</h3>
               </div>
-              <h3 className="font-bold text-gray-800">{cat}</h3>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
