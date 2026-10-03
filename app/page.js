@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function Home() {
@@ -32,23 +32,27 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    // Load AOS animations library dynamically on client side
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/aos@next/dist/aos.js';
-    script.async = true;
-    script.onload = () => {
-      window.AOS.init({
-        duration: 800,
-        once: false,
-        mirror: true
-      });
-    };
-    document.body.appendChild(script);
+    // Load AOS animations library dynamically on client side safely
+    if (typeof window !== 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/aos@next/dist/aos.js';
+      script.async = true;
+      script.onload = () => {
+        if (window.AOS) {
+          window.AOS.init({
+            duration: 800,
+            once: false,
+            mirror: true
+          });
+        }
+      };
+      document.body.appendChild(script);
 
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/aos@next/dist/aos.css';
-    document.head.appendChild(link);
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/aos@next/dist/aos.css';
+      document.head.appendChild(link);
+    }
 
     fetchProducts();
   }, []);
